@@ -1,16 +1,14 @@
 package com.algaworks.algashop.ordering.domain.entity;
 
-import com.algaworks.algashop.ordering.domain.valueobject.BillingInfo;
-import com.algaworks.algashop.ordering.domain.valueobject.Money;
-import com.algaworks.algashop.ordering.domain.valueobject.Quantity;
-import com.algaworks.algashop.ordering.domain.valueobject.ShippingInfo;
+import com.algaworks.algashop.ordering.domain.valueobject.*;
 import com.algaworks.algashop.ordering.domain.valueobject.id.CustomerId;
 import com.algaworks.algashop.ordering.domain.valueobject.id.OrderId;
+import com.algaworks.algashop.ordering.domain.valueobject.id.ProductId;
+import lombok.Builder;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class Order {
 
@@ -36,6 +34,7 @@ public class Order {
 
 	private Set<OrderItem> items;
 
+	@Builder(builderClassName = "ExistingOrderBuilder", builderMethodName = "existing")
 	public Order(OrderId id, CustomerId customerId, Money totalAmount,
 				 Quantity totalItems, OffsetDateTime placedAt,
 				 OffsetDateTime paidAt, OffsetDateTime canceledAt,
@@ -57,6 +56,44 @@ public class Order {
 		this.setShippingCost(shippingCost);
 		this.setExpectedDeliveryDate(expectedDeliveryDate);
 		this.setItems(items);
+	}
+
+	public static Order draft(CustomerId customerId) {
+		return new Order(
+				new OrderId(),
+				customerId,
+				Money.ZERO,
+				Quantity.ZERO,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				OrderStatus.DRAFT,
+				null,
+				null,
+				null,
+				new HashSet<>()
+		);
+	}
+
+	public void addItem(ProductId productId, ProductName productName,
+						Money price, Quantity quantity) {
+
+		OrderItem orderItem = OrderItem.brandNew()
+				.orderId(id())
+				.price(price)
+				.quantity(quantity)
+				.productName(productName)
+				.productId(productId)
+				.build();
+
+		if (items == null) {
+			this.items = new HashSet<>();
+		}
+
+		items.add(orderItem);
 	}
 
 	public OrderId id() {
@@ -116,7 +153,7 @@ public class Order {
 	}
 
 	public Set<OrderItem> items() {
-		return items;
+		return Collections.unmodifiableSet(items);
 	}
 
 	private void setId(OrderId id) {
@@ -156,12 +193,10 @@ public class Order {
 	}
 
 	private void setBilling(BillingInfo billing) {
-		Objects.requireNonNull(billing);
 		this.billing = billing;
 	}
 
 	private void setShipping(ShippingInfo shipping) {
-		Objects.requireNonNull(shipping);
 		this.shipping = shipping;
 	}
 
@@ -171,7 +206,6 @@ public class Order {
 	}
 
 	private void setPaymentMethod(PaymentMethod paymentMethod) {
-		Objects.requireNonNull(paymentMethod);
 		this.paymentMethod = paymentMethod;
 	}
 
