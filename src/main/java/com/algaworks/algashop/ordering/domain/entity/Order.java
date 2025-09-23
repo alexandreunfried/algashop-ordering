@@ -1,14 +1,19 @@
 package com.algaworks.algashop.ordering.domain.entity;
 
+import com.algaworks.algashop.ordering.domain.exception.OrderStatusCannotBeChangedException;
 import com.algaworks.algashop.ordering.domain.valueobject.*;
 import com.algaworks.algashop.ordering.domain.valueobject.id.CustomerId;
 import com.algaworks.algashop.ordering.domain.valueobject.id.OrderId;
 import com.algaworks.algashop.ordering.domain.valueobject.id.ProductId;
 import lombok.Builder;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 public class Order {
 
@@ -41,21 +46,21 @@ public class Order {
 				 OffsetDateTime readyAt, BillingInfo billing,
 				 ShippingInfo shipping, OrderStatus status, PaymentMethod paymentMethod,
 				 Money shippingCost, LocalDate expectedDeliveryDate, Set<OrderItem> items) {
-		this.setId(id);
-		this.setCustomerId(customerId);
-		this.setTotalAmount(totalAmount);
-		this.setTotalItems(totalItems);
-		this.setPlacedAt(placedAt);
-		this.setPaidAt(paidAt);
-		this.setCanceledAt(canceledAt);
-		this.setReadyAt(readyAt);
-		this.setBilling(billing);
-		this.setShipping(shipping);
-		this.setStatus(status);
-		this.setPaymentMethod(paymentMethod);
-		this.setShippingCost(shippingCost);
-		this.setExpectedDeliveryDate(expectedDeliveryDate);
-		this.setItems(items);
+		setId(id);
+		setCustomerId(customerId);
+		setTotalAmount(totalAmount);
+		setTotalItems(totalItems);
+		setPlacedAt(placedAt);
+		setPaidAt(paidAt);
+		setCanceledAt(canceledAt);
+		setReadyAt(readyAt);
+		setBilling(billing);
+		setShipping(shipping);
+		setStatus(status);
+		setPaymentMethod(paymentMethod);
+		setShippingCost(shippingCost);
+		setExpectedDeliveryDate(expectedDeliveryDate);
+		setItems(items);
 	}
 
 	public static Order draft(CustomerId customerId) {
@@ -94,6 +99,30 @@ public class Order {
 		}
 
 		items.add(orderItem);
+
+		recalculateTotals();
+	}
+
+	public void place() {
+		// TODO Business rules!
+		changeStatus(OrderStatus.PLACED);
+	}
+
+	private void changeStatus(OrderStatus newStatus) {
+		Objects.requireNonNull(newStatus);
+		if (status().canNotChangeTo(newStatus)) {
+			throw new OrderStatusCannotBeChangedException(id(), status(), newStatus);
+		}
+
+		setStatus(newStatus);
+	}
+
+	public boolean isDraft() {
+		return OrderStatus.DRAFT.equals(status());
+	}
+
+	public boolean isPlaced() {
+		return OrderStatus.PLACED.equals(status());
 	}
 
 	public OrderId id() {
@@ -154,6 +183,28 @@ public class Order {
 
 	public Set<OrderItem> items() {
 		return Collections.unmodifiableSet(items);
+	}
+
+	private void recalculateTotals() {
+		BigDecimal totalItemsAmount = items().stream()
+				.map(i -> i.totalAmount().value())
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
+
+		Integer totalItemsQuantity = items.stream()
+				.map(i -> i.quantity().value())
+				.reduce(0, Integer::sum);
+
+		BigDecimal shippingCost;
+		if (shippingCost() == null) {
+			shippingCost = BigDecimal.ZERO;
+		} else {
+			shippingCost = this.shippingCost.value();
+		}
+
+		BigDecimal totalAmount = totalItemsAmount.add(shippingCost);
+
+		setTotalAmount(new Money(totalAmount));
+		setTotalItems(new Quantity(totalItemsQuantity));
 	}
 
 	private void setId(OrderId id) {

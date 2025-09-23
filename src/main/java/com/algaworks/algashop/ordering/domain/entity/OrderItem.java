@@ -26,19 +26,19 @@ public class OrderItem {
 	@Builder(builderClassName = "ExistingOrderItemBuilder", builderMethodName = "existing")
 	public OrderItem(OrderItemId id, OrderId orderId, ProductId productId,
 					 ProductName productName, Money price, Quantity quantity, Money totalAmount) {
-		this.setId(id);
-		this.setOrderId(orderId);
-		this.setProductId(productId);
-		this.setProductName(productName);
-		this.setPrice(price);
-		this.setQuantity(quantity);
-		this.setTotalAmount(totalAmount);
+		setId(id);
+		setOrderId(orderId);
+		setProductId(productId);
+		setProductName(productName);
+		setPrice(price);
+		setQuantity(quantity);
+		setTotalAmount(totalAmount);
 	}
 
 	@Builder(builderClassName = "BrandNewOrderItemBuilder", builderMethodName = "brandNew")
 	public static OrderItem createBrandNew(OrderId orderId, ProductId productId,
-									 ProductName productName, Money price, Quantity quantity) {
-		return new OrderItem(
+										   ProductName productName, Money price, Quantity quantity) {
+		OrderItem orderItem = new OrderItem(
 				new OrderItemId(),
 				orderId,
 				productId,
@@ -47,6 +47,10 @@ public class OrderItem {
 				quantity,
 				Money.ZERO
 		);
+
+		orderItem.recalculateTotals();
+
+		return orderItem;
 	}
 
 	public OrderItemId id() {
@@ -75,6 +79,10 @@ public class OrderItem {
 
 	public Money totalAmount() {
 		return totalAmount;
+	}
+
+	private void recalculateTotals() {
+		setTotalAmount(price().multiply(quantity()));
 	}
 
 	private void setId(OrderItemId id) {

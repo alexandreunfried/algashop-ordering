@@ -1,5 +1,6 @@
 package com.algaworks.algashop.ordering.domain.entity;
 
+import com.algaworks.algashop.ordering.domain.exception.OrderStatusCannotBeChangedException;
 import com.algaworks.algashop.ordering.domain.valueobject.Money;
 import com.algaworks.algashop.ordering.domain.valueobject.ProductName;
 import com.algaworks.algashop.ordering.domain.valueobject.Quantity;
@@ -58,6 +59,53 @@ class OrderTest {
 		Set<OrderItem> items = order.items();
 		Assertions.assertThatExceptionOfType(UnsupportedOperationException.class)
 				.isThrownBy(items::clear);
+	}
+
+	@Test
+	void shouldCalculateTotals() {
+		Order order = Order.draft(new CustomerId());
+
+		ProductId productId = new ProductId();
+		order.addItem(
+				productId,
+				new ProductName("Mouse pad"),
+				new Money("100"),
+				new Quantity(2)
+		);
+
+		order.addItem(
+				productId,
+				new ProductName("Ram Memory"),
+				new Money("50"),
+				new Quantity(1)
+		);
+
+		Set<OrderItem> items = order.items();
+		Assertions.assertThat(order.totalAmount()).isEqualTo(new Money("250"));
+		Assertions.assertThat(order.totalItems()).isEqualTo(new Quantity(3));
+
+		Assertions.assertThat(items)
+				.anyMatch(i -> i.totalAmount().equals(new Money("50"))
+						&& i.productName().equals(new ProductName("Ram Memory")))
+				.anyMatch(i -> i.totalAmount().equals(new Money("200"))
+						&& i.productName().equals(new ProductName("Mouse pad")));
+
+	}
+
+	@Test
+	void givenDraftOrder_whenPlace_shouldChangeToPlaced() {
+		Order order = Order.draft(new CustomerId());
+		order.place();
+		Assertions.assertThat(order.isPlaced()).isTrue();
+	}
+
+	@Test
+	void givenPlacedOrder_whenTryToPlace_shouldGenerateException() {
+		Order order = Order.draft(new CustomerId());
+		order.place();
+
+		Assertions.assertThatExceptionOfType(OrderStatusCannotBeChangedException.class)
+				.isThrownBy(order::place);
 	}
 
 }
