@@ -1,5 +1,7 @@
 package com.algaworks.algashop.ordering.domain.entity;
 
+import com.algaworks.algashop.ordering.domain.exception.OrderCannotBePlacedException;
+import com.algaworks.algashop.ordering.domain.exception.OrderInvalidShippingDeliveryDateException;
 import com.algaworks.algashop.ordering.domain.exception.OrderStatusCannotBeChangedException;
 import com.algaworks.algashop.ordering.domain.valueobject.*;
 import com.algaworks.algashop.ordering.domain.valueobject.id.CustomerId;
@@ -104,17 +106,48 @@ public class Order {
 	}
 
 	public void place() {
-		// TODO Business rules!
-		changeStatus(OrderStatus.PLACED);
-	}
+		Objects.requireNonNull(shipping());
+		Objects.requireNonNull(billing());
+		Objects.requireNonNull(expectedDeliveryDate());
+		Objects.requireNonNull(shippingCost());
+		Objects.requireNonNull(paymentMethod());
+		Objects.requireNonNull(items());
 
-	private void changeStatus(OrderStatus newStatus) {
-		Objects.requireNonNull(newStatus);
-		if (status().canNotChangeTo(newStatus)) {
-			throw new OrderStatusCannotBeChangedException(id(), status(), newStatus);
+		if (items().isEmpty()) {
+			throw new OrderCannotBePlacedException(id());
 		}
 
-		setStatus(newStatus);
+		changeStatus(OrderStatus.PLACED);
+		setPlacedAt(OffsetDateTime.now());
+	}
+
+	public void markAsPaid() {
+		changeStatus(OrderStatus.PAID);
+		setPaidAt(OffsetDateTime.now());
+	}
+
+	public void changePaymentMethod(PaymentMethod paymentMethod) {
+		Objects.requireNonNull(paymentMethod);
+		setPaymentMethod(paymentMethod);
+	}
+
+	public void changeShipping(ShippingInfo shipping, Money shippingCost, LocalDate expectedDeliveryDate) {
+		Objects.requireNonNull(shipping);
+		Objects.requireNonNull(shippingCost);
+		Objects.requireNonNull(expectedDeliveryDate);
+
+		if (expectedDeliveryDate.isBefore(LocalDate.now())) {
+			throw new OrderInvalidShippingDeliveryDateException(id());
+		}
+
+		setShipping(shipping);
+		setShippingCost(shippingCost);
+		setExpectedDeliveryDate(expectedDeliveryDate);
+	}
+
+	public void changeBilling(BillingInfo billing) {
+		Objects.requireNonNull(billing);
+		setBilling(billing);
 	}
 
 	public boolean isDraft() {
@@ -123,6 +156,10 @@ public class Order {
 
 	public boolean isPlaced() {
 		return OrderStatus.PLACED.equals(status());
+	}
+
+	public boolean isPaid() {
+		return OrderStatus.PAID.equals(status());
 	}
 
 	public OrderId id() {
@@ -205,6 +242,15 @@ public class Order {
 
 		setTotalAmount(new Money(totalAmount));
 		setTotalItems(new Quantity(totalItemsQuantity));
+	}
+
+	private void changeStatus(OrderStatus newStatus) {
+		Objects.requireNonNull(newStatus);
+		if (status().canNotChangeTo(newStatus)) {
+			throw new OrderStatusCannotBeChangedException(id(), status(), newStatus);
+		}
+
+		setStatus(newStatus);
 	}
 
 	private void setId(OrderId id) {
