@@ -20,4 +20,5 @@ public record ZipCode(String value) {
 	public String toString() {
 		return value;
 	}
+
 }

@@ -24,4 +24,6 @@ public record FullName(String firstName, String lastName) {
 	public String toString() {
 		return firstName + " " + lastName;
 	}
+
 }
+

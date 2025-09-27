@@ -13,14 +13,33 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.util.Set;
 
+import static com.algaworks.algashop.ordering.domain.entity.OrderTestDataBuilder.aBilling;
+import static com.algaworks.algashop.ordering.domain.entity.OrderTestDataBuilder.aShipping;
 import static com.algaworks.algashop.ordering.domain.entity.ProductTestDataBuilder.*;
 
 class OrderTest {
 
 	@Test
-	void shouldGenerate() {
-		Order order = Order.draft(new CustomerId());
-		Assertions.assertThat(order).isNotNull();
+	void shouldGenerateDraftOrder() {
+		CustomerId customerId = new CustomerId();
+		Order order = Order.draft(customerId);
+
+		Assertions.assertWith(order,
+				o -> Assertions.assertThat(o.id()).isNotNull(),
+				o -> Assertions.assertThat(o.customerId()).isEqualTo(customerId),
+				o -> Assertions.assertThat(o.totalAmount()).isEqualTo(Money.ZERO),
+				o -> Assertions.assertThat(o.totalItems()).isEqualTo(Quantity.ZERO),
+				o -> Assertions.assertThat(o.isDraft()).isTrue(),
+				o -> Assertions.assertThat(o.items()).isEmpty(),
+
+				o -> Assertions.assertThat(o.placedAt()).isNull(),
+				o -> Assertions.assertThat(o.paidAt()).isNull(),
+				o -> Assertions.assertThat(o.canceledAt()).isNull(),
+				o -> Assertions.assertThat(o.readyAt()).isNull(),
+				o -> Assertions.assertThat(o.billing()).isNull(),
+				o -> Assertions.assertThat(o.shipping()).isNull(),
+				o -> Assertions.assertThat(o.paymentMethod()).isNull()
+		);
 	}
 
 	@Test
@@ -119,87 +138,37 @@ class OrderTest {
 	}
 
 	@Test
-	void giverDraftOrder_whenChangeBillingInfo_shouldAllowChange() {
-		Address address = Address.builder()
-				.street("Bourbon Street")
-				.number("1234")
-				.neighborhood("North Ville")
-				.complement("apt. 11")
-				.city("Montfort")
-				.state("South Carolina")
-				.zipCode(new ZipCode("79911"))
-				.build();
-
-		BillingInfo billingInfo = BillingInfo.builder()
-				.address(address)
-				.document(new Document("225-09-1992"))
-				.phone(new Phone("123-111-9911"))
-				.fullName(new FullName("John", "Doe"))
-				.build();
-
+	void giverDraftOrder_whenChangeBilling_shouldAllowChange() {
+		Billing billing = aBilling();
 		Order order = Order.draft(new CustomerId());
-		order.changeBilling(billingInfo);
+		order.changeBilling(billing);
 
-		Assertions.assertThat(order.billing()).isEqualTo(billingInfo);
+		Assertions.assertThat(order.billing()).isEqualTo(billing);
 	}
 
 	@Test
-	void givenDraftOrder_whenChangeShippingInfo_shouldAllowChange() {
-		Address address = Address.builder()
-				.street("Bourbon Street")
-				.number("1234")
-				.neighborhood("North Ville")
-				.complement("apt. 11")
-				.city("Montfort")
-				.state("South Carolina")
-				.zipCode(new ZipCode("79911"))
-				.build();
-
-		ShippingInfo shippingInfo = ShippingInfo.builder()
-				.address(address)
-				.fullName(new FullName("John", "Doe"))
-				.document(new Document("112-33-2321"))
-				.phone(new Phone("111-441-1244"))
-				.build();
+	void givenDraftOrder_whenChangeShipping_shouldAllowChange() {
+		Shipping shipping = aShipping();
 
 		Order order = Order.draft(new CustomerId());
-		Money shippingCost = Money.ZERO;
-		LocalDate expectedDeliveryDate = LocalDate.now().plusDays(1);
 
-		order.changeShipping(shippingInfo, shippingCost, expectedDeliveryDate);
+		order.changeShipping(shipping);
 
-		Assertions.assertWith(order,
-				o -> Assertions.assertThat(o.shipping()).isEqualTo(shippingInfo),
-				o -> Assertions.assertThat(o.shippingCost()).isEqualTo(shippingCost),
-				o -> Assertions.assertThat(o.expectedDeliveryDate()).isEqualTo(expectedDeliveryDate)
-		);
+		Assertions.assertThat(order.shipping()).isEqualTo(shipping);
 	}
 
 	@Test
-	void givenDraftOrderAndDeliveryDateInThePast_whenChangeShippingInfo_shouldNotAllowChange() {
-		Address address = Address.builder()
-				.street("Bourbon Street")
-				.number("1234")
-				.neighborhood("North Ville")
-				.complement("apt. 11")
-				.city("Montfort")
-				.state("South Carolina")
-				.zipCode(new ZipCode("79911"))
-				.build();
-
-		ShippingInfo shippingInfo = ShippingInfo.builder()
-				.address(address)
-				.fullName(new FullName("John", "Doe"))
-				.document(new Document("112-33-2321"))
-				.phone(new Phone("111-441-1244"))
-				.build();
-
-		Order order = Order.draft(new CustomerId());
-		Money shippingCost = Money.ZERO;
+	void givenDraftOrderAndDeliveryDateInThePast_whenChangeShipping_shouldNotAllowChange() {
 		LocalDate expectedDeliveryDate = LocalDate.now().minusDays(2);
 
+		Shipping shipping = aShipping().toBuilder()
+				.expectedDate(expectedDeliveryDate)
+				.build();
+
+		Order order = Order.draft(new CustomerId());
+
 		Assertions.assertThatExceptionOfType(OrderInvalidShippingDeliveryDateException.class)
-				.isThrownBy(() -> order.changeShipping(shippingInfo, shippingCost, expectedDeliveryDate));
+				.isThrownBy(() -> order.changeShipping(shipping));
 
 	}
 

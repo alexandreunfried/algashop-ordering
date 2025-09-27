@@ -14,6 +14,7 @@ public record Address(
 		String state,
 		ZipCode zipCode
 ) {
+
 	@Builder(toBuilder = true)
 	public Address {
 		FieldValidations.requiresNonBlank(street);
@@ -23,4 +24,5 @@ public record Address(
 		FieldValidations.requiresNonBlank(state);
 		Objects.requireNonNull(zipCode);
 	}
+
 }

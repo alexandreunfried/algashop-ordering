@@ -23,4 +23,5 @@ public record BirthDate(LocalDate value) {
 	public String toString() {
 		return value.toString();
 	}
+
 }

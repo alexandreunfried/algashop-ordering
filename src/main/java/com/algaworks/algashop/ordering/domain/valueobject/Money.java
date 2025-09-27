@@ -18,7 +18,7 @@ public record Money(BigDecimal value) implements Comparable<Money> {
 		Objects.requireNonNull(value); //todo mensagem
 		this.value = value.setScale(2, roundingMode);
 		if (this.value.signum() == -1) {
-			throw new IllegalArgumentException();//todo mensagem
+			throw new IllegalArgumentException(); //todo mensagem
 		}
 	}
 
@@ -49,4 +49,5 @@ public record Money(BigDecimal value) implements Comparable<Money> {
 	public Money divide(Money o) {
 		return new Money(this.value.divide(o.value, roundingMode));
 	}
+
 }

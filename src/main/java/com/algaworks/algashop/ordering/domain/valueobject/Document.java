@@ -15,4 +15,5 @@ public record Document(String value) {
 	public String toString() {
 		return value;
 	}
+
 }
