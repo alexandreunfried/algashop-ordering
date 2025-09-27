@@ -2,9 +2,11 @@ package com.algaworks.algashop.ordering.domain.entity;
 
 import com.algaworks.algashop.ordering.domain.valueobject.*;
 import com.algaworks.algashop.ordering.domain.valueobject.id.CustomerId;
-import com.algaworks.algashop.ordering.domain.valueobject.id.ProductId;
 
 import java.time.LocalDate;
+
+import static com.algaworks.algashop.ordering.domain.entity.ProductTestDataBuilder.aProduct;
+import static com.algaworks.algashop.ordering.domain.entity.ProductTestDataBuilder.aProductAltRamMemory;
 
 public class OrderTestDataBuilder {
 
@@ -38,16 +40,12 @@ public class OrderTestDataBuilder {
 
 		if (withItems) {
 			order.addItem(
-					new ProductId(),
-					new ProductName("Notebook X11"),
-					new Money("3000"),
+					aProduct().build(),
 					new Quantity(2)
 			);
 
 			order.addItem(
-					new ProductId(),
-					new ProductName("4GB RAM X11"),
-					new Money("200"),
+					aProductAltRamMemory().build(),
 					new Quantity(1)
 			);
 		}
