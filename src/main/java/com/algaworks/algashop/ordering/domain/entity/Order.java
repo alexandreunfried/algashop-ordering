@@ -1,9 +1,6 @@
 package com.algaworks.algashop.ordering.domain.entity;
 
-import com.algaworks.algashop.ordering.domain.exception.OrderCannotBePlacedException;
-import com.algaworks.algashop.ordering.domain.exception.OrderDoesNotContainOrderItemException;
-import com.algaworks.algashop.ordering.domain.exception.OrderInvalidShippingDeliveryDateException;
-import com.algaworks.algashop.ordering.domain.exception.OrderStatusCannotBeChangedException;
+import com.algaworks.algashop.ordering.domain.exception.*;
 import com.algaworks.algashop.ordering.domain.valueobject.*;
 import com.algaworks.algashop.ordering.domain.valueobject.id.CustomerId;
 import com.algaworks.algashop.ordering.domain.valueobject.id.OrderId;
@@ -82,6 +79,8 @@ public class Order {
 		Objects.requireNonNull(product);
 		Objects.requireNonNull(quantity);
 
+		verifyIfChangeable();
+
 		product.checkOutOfStock();
 
 		OrderItem orderItem = OrderItem.brandNew()
@@ -110,13 +109,27 @@ public class Order {
 		setPaidAt(OffsetDateTime.now());
 	}
 
+	public void markAsReady() {
+		changeStatus(OrderStatus.READY);
+		setReadyAt(OffsetDateTime.now());
+	}
+
 	public void changePaymentMethod(PaymentMethod paymentMethod) {
 		Objects.requireNonNull(paymentMethod);
+		verifyIfChangeable();
 		setPaymentMethod(paymentMethod);
+	}
+
+	public void changeBilling(Billing billing) {
+		Objects.requireNonNull(billing);
+		verifyIfChangeable();
+		setBilling(billing);
 	}
 
 	public void changeShipping(Shipping newShipping) {
 		Objects.requireNonNull(newShipping);
+
+		verifyIfChangeable();
 
 		if (newShipping.expectedDate().isBefore(LocalDate.now())) {
 			throw new OrderInvalidShippingDeliveryDateException(id());
@@ -130,15 +143,27 @@ public class Order {
 		Objects.requireNonNull(orderItemId);
 		Objects.requireNonNull(quantity);
 
+		verifyIfChangeable();
+
 		OrderItem orderItem = findOrderItem(orderItemId);
 		orderItem.changeQuantity(quantity);
 
 		recalculateTotals();
 	}
 
-	public void changeBilling(Billing billing) {
-		Objects.requireNonNull(billing);
-		setBilling(billing);
+	public void removeItem(OrderItemId orderItemId) {
+		Objects.requireNonNull(orderItemId);
+		verifyIfChangeable();
+
+		OrderItem orderItem = findOrderItem(orderItemId);
+		items.remove(orderItem);
+
+		recalculateTotals();
+	}
+
+	public void cancel() {
+		changeStatus(OrderStatus.CANCELED);
+		setCanceledAt(OffsetDateTime.now());
 	}
 
 	public boolean isDraft() {
@@ -151,6 +176,14 @@ public class Order {
 
 	public boolean isPaid() {
 		return OrderStatus.PAID.equals(status());
+	}
+
+	public boolean isReady() {
+		return OrderStatus.READY.equals(status());
+	}
+
+	public boolean isCanceled() {
+		return OrderStatus.CANCELED.equals(status());
 	}
 
 	public OrderId id() {
@@ -257,6 +290,12 @@ public class Order {
 				.filter(i -> i.id().equals(orderItemId))
 				.findFirst()
 				.orElseThrow(() -> new OrderDoesNotContainOrderItemException(id(), orderItemId));
+	}
+
+	private void verifyIfChangeable() {
+		if (!isDraft()) {
+			throw new OrderCannotBeEditedException(id(), status());
+		}
 	}
 
 	private void setId(OrderId id) {
