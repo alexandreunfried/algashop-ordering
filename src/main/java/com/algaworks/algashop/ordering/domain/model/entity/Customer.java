@@ -11,7 +11,7 @@ import java.util.UUID;
 
 import static com.algaworks.algashop.ordering.domain.model.exception.ErrorMessages.VALIDATION_ERROR_FULLNAME_IS_NULL;
 
-public class Customer {
+public class Customer implements AggregateRoot<CustomerId> {
 
 	private CustomerId id;
 	private FullName fullName;
