@@ -30,6 +30,10 @@ class OrderPersistenceEntityRepositoryIT {
 		orderPersistenceEntityRepository.saveAndFlush(entity);
 
 		assertThat(orderPersistenceEntityRepository.existsById(entity.getId())).isTrue();
+
+		OrderPersistenceEntity savedEntity = orderPersistenceEntityRepository.findById(entity.getId()).orElseThrow();
+
+		assertThat(savedEntity.getItems()).isNotEmpty();
 	}
 
 	@Test
