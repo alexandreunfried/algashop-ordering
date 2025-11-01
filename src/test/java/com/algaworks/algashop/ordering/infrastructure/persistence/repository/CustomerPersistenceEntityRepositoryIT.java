@@ -1,6 +1,8 @@
 package com.algaworks.algashop.ordering.infrastructure.persistence.repository;
 
 import com.algaworks.algashop.ordering.infrastructure.persistence.config.SpringDataAuditingConfig;
+import com.algaworks.algashop.ordering.infrastructure.persistence.entity.CustomerPersistenceEntity;
+import com.algaworks.algashop.ordering.infrastructure.persistence.entity.CustomerPersistenceEntityTestDataBuilder;
 import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntity;
 import com.algaworks.algashop.ordering.infrastructure.persistence.entity.OrderPersistenceEntityTestDataBuilder;
 import lombok.RequiredArgsConstructor;
@@ -16,35 +18,35 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import(SpringDataAuditingConfig.class)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-class OrderPersistenceEntityRepositoryIT {
+class CustomerPersistenceEntityRepositoryIT {
 
-	private final OrderPersistenceEntityRepository orderPersistenceEntityRepository;
+	private final CustomerPersistenceEntityRepository customerPersistenceEntityRepository;
 
 	@Test
 	void shouldPersist() {
-		OrderPersistenceEntity entity = OrderPersistenceEntityTestDataBuilder.existingOrder().build();
+		CustomerPersistenceEntity entity = CustomerPersistenceEntityTestDataBuilder.existingCustomer().build();
 
-		orderPersistenceEntityRepository.saveAndFlush(entity);
+		customerPersistenceEntityRepository.saveAndFlush(entity);
 
-		assertThat(orderPersistenceEntityRepository.existsById(entity.getId())).isTrue();
+		assertThat(customerPersistenceEntityRepository.existsById(entity.getId())).isTrue();
 
-		OrderPersistenceEntity savedEntity = orderPersistenceEntityRepository.findById(entity.getId()).orElseThrow();
+		CustomerPersistenceEntity savedEntity = customerPersistenceEntityRepository.findById(entity.getId()).orElseThrow();
 
-		assertThat(savedEntity.getItems()).isNotEmpty();
+		assertThat(savedEntity.getEmail()).isEqualTo(entity.getEmail());
 	}
 
 	@Test
 	void shouldCount() {
-		long count = orderPersistenceEntityRepository.count();
+		long count = customerPersistenceEntityRepository.count();
 
 		assertThat(count).isZero();
 	}
 
 	@Test
 	void shouldSetAuditingValues() {
-		OrderPersistenceEntity entity = OrderPersistenceEntityTestDataBuilder.existingOrder().build();
+		CustomerPersistenceEntity entity = CustomerPersistenceEntityTestDataBuilder.existingCustomer().build();
 
-		entity = orderPersistenceEntityRepository.saveAndFlush(entity);
+		entity = customerPersistenceEntityRepository.saveAndFlush(entity);
 
 		assertThat(entity.getCreatedByUserId()).isNotNull();
 		assertThat(entity.getLastModifiedAt()).isNotNull();

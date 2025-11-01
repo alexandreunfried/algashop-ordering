@@ -43,11 +43,11 @@ public class OrderPersistenceEntity {
 	@CreatedBy
 	private UUID createdByUserId;
 
-	@LastModifiedDate
-	private OffsetDateTime lastModifiedAt;
-
 	@LastModifiedBy
 	private UUID lastModifiedByUserId;
+
+	@LastModifiedDate
+	private OffsetDateTime lastModifiedAt;
 
 	@Version
 	private Long version;
@@ -64,7 +64,7 @@ public class OrderPersistenceEntity {
 			@AttributeOverride(name = "address.neighborhood", column = @Column(name = "billing_address_neighborhood")),
 			@AttributeOverride(name = "address.city", column = @Column(name = "billing_address_city")),
 			@AttributeOverride(name = "address.state", column = @Column(name = "billing_address_state")),
-			@AttributeOverride(name = "address.zipCode", column = @Column(name = "billing_address_zipCode"))
+			@AttributeOverride(name = "address.zipCode", column = @Column(name = "billing_address_zip_code"))
 	})
 	private BillingEmbeddable billing;
 
@@ -82,7 +82,7 @@ public class OrderPersistenceEntity {
 			@AttributeOverride(name = "address.neighborhood", column = @Column(name = "shipping_address_neighborhood")),
 			@AttributeOverride(name = "address.city", column = @Column(name = "shipping_address_city")),
 			@AttributeOverride(name = "address.state", column = @Column(name = "shipping_address_state")),
-			@AttributeOverride(name = "address.zipCode", column = @Column(name = "shipping_address_zipCode"))
+			@AttributeOverride(name = "address.zipCode", column = @Column(name = "shipping_address_zip_code"))
 	})
 	private ShippingEmbeddable shipping;
 
@@ -107,8 +107,8 @@ public class OrderPersistenceEntity {
 			Long version,
 			BillingEmbeddable billing,
 			ShippingEmbeddable shipping,
-			Set<OrderItemPersistenceEntity> items) {
-
+			Set<OrderItemPersistenceEntity> items
+	) {
 		this.id = id;
 		this.customerId = customerId;
 		this.totalAmount = totalAmount;

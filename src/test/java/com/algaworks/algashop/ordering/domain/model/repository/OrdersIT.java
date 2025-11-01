@@ -7,6 +7,7 @@ import com.algaworks.algashop.ordering.domain.model.valueobject.id.OrderId;
 import com.algaworks.algashop.ordering.infrastructure.persistence.assembler.OrderPersistenceEntityAssembler;
 import com.algaworks.algashop.ordering.infrastructure.persistence.disassembler.OrderPersistenceEntityDisassembler;
 import com.algaworks.algashop.ordering.infrastructure.persistence.provider.OrdersPersistenceProvider;
+import lombok.RequiredArgsConstructor;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,14 +21,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @Import({OrdersPersistenceProvider.class, OrderPersistenceEntityAssembler.class, OrderPersistenceEntityDisassembler.class})
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 class OrdersIT {
 
 	private final Orders orders;
-
-	@Autowired
-	public OrdersIT(Orders orders) {
-		this.orders = orders;
-	}
 
 	@Test
 	void shouldPersistAndFind() {

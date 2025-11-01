@@ -8,6 +8,7 @@ import com.algaworks.algashop.ordering.infrastructure.persistence.config.SpringD
 import com.algaworks.algashop.ordering.infrastructure.persistence.disassembler.OrderPersistenceEntityDisassembler;
 import com.algaworks.algashop.ordering.infrastructure.persistence.repository.OrderPersistenceEntityRepository;
 import org.assertj.core.api.Assertions;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -22,16 +23,11 @@ import org.springframework.transaction.annotation.Transactional;
 		OrderPersistenceEntityDisassembler.class,
 		SpringDataAuditingConfig.class
 })
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 class OrdersPersistenceProviderIT {
 
 	private final OrdersPersistenceProvider persistenceProvider;
 	private final OrderPersistenceEntityRepository entityRepository;
-
-	@Autowired
-	public OrdersPersistenceProviderIT(OrdersPersistenceProvider persistenceProvider, OrderPersistenceEntityRepository entityRepository) {
-		this.persistenceProvider = persistenceProvider;
-		this.entityRepository = entityRepository;
-	}
 
 	@Test
 	void shouldUpdateAndKeepPersistenceEntityState() {

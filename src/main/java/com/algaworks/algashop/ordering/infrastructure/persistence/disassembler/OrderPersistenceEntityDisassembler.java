@@ -9,7 +9,6 @@ import com.algaworks.algashop.ordering.domain.model.valueobject.id.CustomerId;
 import com.algaworks.algashop.ordering.domain.model.valueobject.id.OrderId;
 import com.algaworks.algashop.ordering.domain.model.valueobject.id.OrderItemId;
 import com.algaworks.algashop.ordering.domain.model.valueobject.id.ProductId;
-import com.algaworks.algashop.ordering.infrastructure.persistence.embeddable.AddressEmbeddable;
 import com.algaworks.algashop.ordering.infrastructure.persistence.embeddable.BillingEmbeddable;
 import com.algaworks.algashop.ordering.infrastructure.persistence.embeddable.RecipientEmbeddable;
 import com.algaworks.algashop.ordering.infrastructure.persistence.embeddable.ShippingEmbeddable;
@@ -77,7 +76,7 @@ public class OrderPersistenceEntityDisassembler {
 								.phone(new Phone(recipientEmbeddable.getPhone()))
 								.build()
 				)
-				.address(toAddressValueObject(shippingEmbeddable.getAddress()))
+				.address(AddressEmbeddableDisassembler.toAddress(shippingEmbeddable.getAddress()))
 				.build();
 	}
 
@@ -92,26 +91,8 @@ public class OrderPersistenceEntityDisassembler {
 				.document(new Document(billingEmbeddable.getDocument()))
 				.phone(new Phone(billingEmbeddable.getPhone()))
 				.email(new Email(billingEmbeddable.getEmail()))
-				.address(toAddressValueObject(billingEmbeddable.getAddress()))
+				.address(AddressEmbeddableDisassembler.toAddress(billingEmbeddable.getAddress()))
 				.build();
 	}
-
-	private Address toAddressValueObject(AddressEmbeddable address) {
-
-		if (address == null) {
-			return null;
-		}
-
-		return Address.builder()
-				.street(address.getStreet())
-				.number(address.getNumber())
-				.complement(address.getComplement())
-				.neighborhood(address.getNeighborhood())
-				.city(address.getCity())
-				.state(address.getState())
-				.zipCode(new ZipCode(address.getZipCode()))
-				.build();
-	}
-
 
 }

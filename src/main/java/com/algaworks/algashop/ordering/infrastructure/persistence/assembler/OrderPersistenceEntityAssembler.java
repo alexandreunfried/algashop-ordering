@@ -2,11 +2,9 @@ package com.algaworks.algashop.ordering.infrastructure.persistence.assembler;
 
 import com.algaworks.algashop.ordering.domain.model.entity.Order;
 import com.algaworks.algashop.ordering.domain.model.entity.OrderItem;
-import com.algaworks.algashop.ordering.domain.model.valueobject.Address;
 import com.algaworks.algashop.ordering.domain.model.valueobject.Billing;
 import com.algaworks.algashop.ordering.domain.model.valueobject.Recipient;
 import com.algaworks.algashop.ordering.domain.model.valueobject.Shipping;
-import com.algaworks.algashop.ordering.infrastructure.persistence.embeddable.AddressEmbeddable;
 import com.algaworks.algashop.ordering.infrastructure.persistence.embeddable.BillingEmbeddable;
 import com.algaworks.algashop.ordering.infrastructure.persistence.embeddable.RecipientEmbeddable;
 import com.algaworks.algashop.ordering.infrastructure.persistence.embeddable.ShippingEmbeddable;
@@ -98,24 +96,7 @@ public class OrderPersistenceEntityAssembler {
 				.document(billing.document().value())
 				.phone(billing.phone().value())
 				.email(billing.email().value())
-				.address(toAddressEmbeddable(billing.address()))
-				.build();
-	}
-
-	private AddressEmbeddable toAddressEmbeddable(Address address) {
-
-		if (address == null) {
-			return null;
-		}
-
-		return AddressEmbeddable.builder()
-				.city(address.city())
-				.state(address.state())
-				.number(address.number())
-				.street(address.street())
-				.complement(address.complement())
-				.neighborhood(address.neighborhood())
-				.zipCode(address.zipCode().value())
+				.address(AddressEmbeddableAssembler.toAddressEmbeddable(billing.address()))
 				.build();
 	}
 
@@ -128,7 +109,7 @@ public class OrderPersistenceEntityAssembler {
 		var builder = ShippingEmbeddable.builder()
 				.expectedDate(shipping.expectedDate())
 				.cost(shipping.cost().value())
-				.address(toAddressEmbeddable(shipping.address()));
+				.address((AddressEmbeddableAssembler.toAddressEmbeddable(shipping.address())));
 
 		Recipient recipient = shipping.recipient();
 
