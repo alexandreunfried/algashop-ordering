@@ -3,7 +3,7 @@ package com.algaworks.algashop.ordering.infrastructure.persistence.disassembler;
 
 import org.junit.jupiter.api.Test;
 
-import static com.algaworks.algashop.ordering.infrastructure.persistence.entity.CustomerPersistenceEntityTestDataBuilder.existingCustomer;
+import static com.algaworks.algashop.ordering.infrastructure.persistence.entity.CustomerPersistenceEntityTestDataBuilder.aCustomer;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class CustomerPersistenceEntityDisassemblerTest {
@@ -12,7 +12,7 @@ class CustomerPersistenceEntityDisassemblerTest {
 
 	@Test
 	void shouldConvertFromPersistence() {
-		var persistenceEntity = existingCustomer().build();
+		var persistenceEntity = aCustomer().build();
 		var domainEntity = disassembler.toDomainEntity(persistenceEntity);
 
 		assertThat(domainEntity).satisfies(entity -> {

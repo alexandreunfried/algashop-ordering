@@ -28,7 +28,10 @@ public class OrderPersistenceEntity {
 	@Id
 	@EqualsAndHashCode.Include
 	private Long id;
-	private UUID customerId;
+
+	@JoinColumn
+	@ManyToOne(optional = false)
+	private CustomerPersistenceEntity customer;
 
 	private BigDecimal totalAmount;
 	private Integer totalItems;
@@ -92,7 +95,7 @@ public class OrderPersistenceEntity {
 	@Builder
 	public OrderPersistenceEntity(
 			Long id,
-			UUID customerId,
+			CustomerPersistenceEntity customer,
 			BigDecimal totalAmount,
 			Integer totalItems,
 			String status,
@@ -110,7 +113,7 @@ public class OrderPersistenceEntity {
 			Set<OrderItemPersistenceEntity> items
 	) {
 		this.id = id;
-		this.customerId = customerId;
+		this.customer = customer;
 		this.totalAmount = totalAmount;
 		this.totalItems = totalItems;
 		this.status = status;
@@ -148,6 +151,14 @@ public class OrderPersistenceEntity {
 
 		item.setOrder(this);
 		getItems().add(item);
+	}
+
+	public UUID getCustomerId() {
+		if (customer == null) {
+			return null;
+		}
+
+		return customer.getId();
 	}
 
 }

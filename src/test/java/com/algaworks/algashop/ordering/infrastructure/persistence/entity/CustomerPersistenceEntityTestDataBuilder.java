@@ -1,12 +1,12 @@
 package com.algaworks.algashop.ordering.infrastructure.persistence.entity;
 
-import com.algaworks.algashop.ordering.domain.model.utility.IdGenerator;
 import com.algaworks.algashop.ordering.infrastructure.persistence.assembler.AddressEmbeddableAssembler;
 import com.algaworks.algashop.ordering.infrastructure.persistence.entity.CustomerPersistenceEntity.CustomerPersistenceEntityBuilder;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
+import static com.algaworks.algashop.ordering.domain.model.entity.CustomerTestDataBuilder.DEFAULT_CUSTOMER_ID;
 import static com.algaworks.algashop.ordering.domain.model.entity.CustomerTestDataBuilder.brandNewAddress;
 
 public class CustomerPersistenceEntityTestDataBuilder {
@@ -14,9 +14,9 @@ public class CustomerPersistenceEntityTestDataBuilder {
 	private CustomerPersistenceEntityTestDataBuilder() {
 	}
 
-	public static CustomerPersistenceEntityBuilder existingCustomer() {
+	public static CustomerPersistenceEntityBuilder aCustomer() {
 		return CustomerPersistenceEntity.builder()
-				.id(IdGenerator.generateTimeBasedUUID())
+				.id(DEFAULT_CUSTOMER_ID.value())
 				.firstName("John")
 				.lastName("Smith")
 				.birthDate(LocalDate.now())

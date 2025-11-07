@@ -5,12 +5,13 @@ import com.algaworks.algashop.ordering.domain.model.valueobject.id.CustomerId;
 
 import java.time.LocalDate;
 
+import static com.algaworks.algashop.ordering.domain.model.entity.CustomerTestDataBuilder.DEFAULT_CUSTOMER_ID;
 import static com.algaworks.algashop.ordering.domain.model.entity.ProductTestDataBuilder.aProduct;
 import static com.algaworks.algashop.ordering.domain.model.entity.ProductTestDataBuilder.aProductAltRamMemory;
 
 public class OrderTestDataBuilder {
 
-	private CustomerId customerId = new CustomerId();
+	private CustomerId customerId = DEFAULT_CUSTOMER_ID;
 
 	private PaymentMethod paymentMethod = PaymentMethod.GATEWAY_BALANCE;
 
