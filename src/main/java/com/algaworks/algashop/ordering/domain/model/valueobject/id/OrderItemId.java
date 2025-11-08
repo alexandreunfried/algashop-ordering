@@ -23,6 +23,7 @@ public record OrderItemId(TSID value) {
 		this(TSID.from(value));
 	}
 
+	@SuppressWarnings("NullableProblems")
 	@Override
 	public String toString() {
 		return value().toString();

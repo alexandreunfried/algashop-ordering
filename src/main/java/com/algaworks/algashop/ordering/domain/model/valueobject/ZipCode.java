@@ -16,6 +16,7 @@ public record ZipCode(String value) {
 		}
 	}
 
+	@SuppressWarnings("NullableProblems")
 	@Override
 	public String toString() {
 		return value;

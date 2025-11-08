@@ -44,7 +44,7 @@ public class CustomersPersistenceProvider implements Customers {
 	}
 
 	@Override
-	@Transactional(readOnly = false)
+	@Transactional
 	public void add(Customer aggregateRoot) {
 		UUID customerId = aggregateRoot.id().value();
 
@@ -86,4 +86,5 @@ public class CustomersPersistenceProvider implements Customers {
 		return persistenceRepository.findByEmail(email.value())
 				.map(disassembler::toDomainEntity);
 	}
+
 }

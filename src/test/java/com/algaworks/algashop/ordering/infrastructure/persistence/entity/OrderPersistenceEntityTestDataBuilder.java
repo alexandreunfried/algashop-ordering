@@ -47,5 +47,4 @@ public class OrderPersistenceEntityTestDataBuilder {
 				.productId(IdGenerator.generateTimeBasedUUID());
 	}
 
-
 }

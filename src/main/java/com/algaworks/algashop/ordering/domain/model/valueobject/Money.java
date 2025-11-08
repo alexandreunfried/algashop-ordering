@@ -15,10 +15,10 @@ public record Money(BigDecimal value) implements Comparable<Money> {
 	}
 
 	public Money(BigDecimal value) {
-		Objects.requireNonNull(value); //todo mensagem
+		Objects.requireNonNull(value);
 		this.value = value.setScale(2, roundingMode);
 		if (this.value.signum() == -1) {
-			throw new IllegalArgumentException(); //todo mensagem
+			throw new IllegalArgumentException();
 		}
 	}
 
@@ -36,6 +36,7 @@ public record Money(BigDecimal value) implements Comparable<Money> {
 		return new Money(this.value.add(money.value));
 	}
 
+	@SuppressWarnings("NullableProblems")
 	@Override
 	public String toString() {
 		return value.toString();

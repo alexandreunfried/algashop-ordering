@@ -8,6 +8,7 @@ public record ProductName(String value) {
 		FieldValidations.requiresNonBlank(value);
 	}
 
+	@SuppressWarnings("NullableProblems")
 	@Override
 	public String toString() {
 		return value;

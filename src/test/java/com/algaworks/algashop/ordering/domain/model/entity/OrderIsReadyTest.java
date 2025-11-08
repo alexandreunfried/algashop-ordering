@@ -32,4 +32,5 @@ class OrderIsReadyTest {
 
 		Assertions.assertThat(order.isReady()).isFalse();
 	}
+
 }

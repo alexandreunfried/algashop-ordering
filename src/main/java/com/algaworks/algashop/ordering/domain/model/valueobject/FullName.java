@@ -20,6 +20,7 @@ public record FullName(String firstName, String lastName) {
 		this.lastName = lastName.trim();
 	}
 
+	@SuppressWarnings("NullableProblems")
 	@Override
 	public String toString() {
 		return firstName + " " + lastName;

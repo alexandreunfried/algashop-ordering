@@ -15,6 +15,7 @@ public record CustomerId(UUID value) {
 		this(IdGenerator.generateTimeBasedUUID());
 	}
 
+	@SuppressWarnings("NullableProblems")
 	@Override
 	public String toString() {
 		return value.toString();

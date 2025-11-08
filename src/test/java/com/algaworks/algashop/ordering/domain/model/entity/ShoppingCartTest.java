@@ -163,4 +163,5 @@ class ShoppingCartTest {
 
 		Assertions.assertThat(shoppingCart1).isNotEqualTo(shoppingCart2);
 	}
+
 }

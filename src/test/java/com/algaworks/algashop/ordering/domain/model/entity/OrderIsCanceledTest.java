@@ -28,4 +28,5 @@ class OrderIsCanceledTest {
 		Order order = OrderTestDataBuilder.anOrder().status(OrderStatus.PAID).build();
 		Assertions.assertThat(order.isCanceled()).isFalse();
 	}
+
 }

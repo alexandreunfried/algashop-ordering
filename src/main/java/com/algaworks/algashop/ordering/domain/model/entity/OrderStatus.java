@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public enum OrderStatus {
+
 	DRAFT,
 	PLACED(DRAFT),
 	PAID(PLACED),
@@ -24,4 +25,5 @@ public enum OrderStatus {
 	public boolean canNotChangeTo(OrderStatus newStatus) {
 		return !canChangeTo(newStatus);
 	}
+
 }

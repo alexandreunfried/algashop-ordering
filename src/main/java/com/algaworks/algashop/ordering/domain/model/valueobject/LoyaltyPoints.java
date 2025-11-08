@@ -30,6 +30,7 @@ public record LoyaltyPoints(Integer value) implements Comparable<LoyaltyPoints> 
 		return new LoyaltyPoints(this.value() + loyaltyPoints.value());
 	}
 
+	@SuppressWarnings("NullableProblems")
 	@Override
 	public String toString() {
 		return value.toString();

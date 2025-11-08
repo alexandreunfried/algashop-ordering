@@ -56,4 +56,5 @@ class OrderMarkAsReadyTest {
 				o -> Assertions.assertThat(o.readyAt()).isNotNull()
 		);
 	}
+
 }

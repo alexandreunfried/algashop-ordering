@@ -256,4 +256,5 @@ public class Customer implements AggregateRoot<CustomerId> {
 	public int hashCode() {
 		return Objects.hashCode(id);
 	}
+
 }

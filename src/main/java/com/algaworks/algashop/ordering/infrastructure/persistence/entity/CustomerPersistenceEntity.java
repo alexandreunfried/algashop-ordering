@@ -100,4 +100,5 @@ public class CustomerPersistenceEntity {
 		this.lastModifiedAt = lastModifiedAt;
 		this.version = version;
 	}
+
 }

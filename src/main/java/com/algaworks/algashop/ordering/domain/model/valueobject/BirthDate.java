@@ -19,6 +19,7 @@ public record BirthDate(LocalDate value) {
 		return (int) Duration.between(value, LocalDate.now()).toDays();
 	}
 
+	@SuppressWarnings("NullableProblems")
 	@Override
 	public String toString() {
 		return value.toString();

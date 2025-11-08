@@ -27,4 +27,5 @@ public class IdGenerator {
 	public static TSID generateTSID() {
 		return tsidFactory.generate();
 	}
+
 }

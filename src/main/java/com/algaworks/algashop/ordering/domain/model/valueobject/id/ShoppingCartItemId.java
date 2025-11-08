@@ -19,6 +19,7 @@ public record ShoppingCartItemId(UUID value) {
 		this(UUID.fromString(value));
 	}
 
+	@SuppressWarnings("NullableProblems")
 	@Override
 	public String toString() {
 		return value.toString();

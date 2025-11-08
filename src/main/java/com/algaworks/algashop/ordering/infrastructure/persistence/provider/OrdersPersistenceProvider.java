@@ -42,7 +42,7 @@ public class OrdersPersistenceProvider implements Orders {
 	}
 
 	@Override
-	@Transactional(readOnly = false)
+	@Transactional
 	public void add(Order aggregateRoot) {
 		long orderId = aggregateRoot.id().value().toLong();
 

@@ -380,4 +380,5 @@ public class Order implements AggregateRoot<OrderId> {
 	public int hashCode() {
 		return Objects.hashCode(id);
 	}
+
 }

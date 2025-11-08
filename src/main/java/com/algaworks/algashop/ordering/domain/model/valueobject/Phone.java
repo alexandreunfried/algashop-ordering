@@ -11,6 +11,7 @@ public record Phone(String value) {
 		}
 	}
 
+	@SuppressWarnings("NullableProblems")
 	@Override
 	public String toString() {
 		return value;

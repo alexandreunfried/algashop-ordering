@@ -131,5 +131,4 @@ class CustomersIT {
 		assertThat(customerOptional).isNotPresent();
 	}
 
-
 }

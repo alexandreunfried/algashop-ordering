@@ -19,6 +19,7 @@ public record Quantity(Integer value) implements Serializable, Comparable<Quanti
 		return new Quantity(this.value + quantity.value());
 	}
 
+	@SuppressWarnings("NullableProblems")
 	@Override
 	public String toString() {
 		return String.valueOf(value);
