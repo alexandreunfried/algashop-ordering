@@ -157,8 +157,8 @@ public class Customer implements AggregateRoot<CustomerId> {
 		return promotionNotificationsAllowed;
 	}
 
-	public Boolean isArchived() {
-		return archived;
+	public boolean isArchived() {
+		return Boolean.TRUE.equals(archived);
 	}
 
 	public OffsetDateTime registeredAt() {

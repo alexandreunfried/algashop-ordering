@@ -38,9 +38,9 @@ class OrderRemoveItemTest {
 	@Test
 	void givenDraftOrder_whenTryToRemoveNoExistingItem_shouldGenerateException() {
 		Order order = OrderTestDataBuilder.anOrder().build();
-
+		OrderItemId orderItemId = new OrderItemId();
 		Assertions.assertThatExceptionOfType(OrderDoesNotContainOrderItemException.class)
-				.isThrownBy(() -> order.removeItem(new OrderItemId()));
+				.isThrownBy(() -> order.removeItem(orderItemId));
 
 		Assertions.assertWith(order,
 				i -> Assertions.assertThat(i.totalAmount()).isEqualTo(new Money("6210.00")),
@@ -51,9 +51,10 @@ class OrderRemoveItemTest {
 	@Test
 	void givenPlacedOrder_whenTryToRemoveItem_shouldGenerateException() {
 		Order order = OrderTestDataBuilder.anOrder().status(OrderStatus.PLACED).build();
+		OrderItemId orderItemId = new OrderItemId();
 
 		Assertions.assertThatExceptionOfType(OrderCannotBeEditedException.class)
-				.isThrownBy(() -> order.removeItem(new OrderItemId()));
+				.isThrownBy(() -> order.removeItem(orderItemId));
 
 		Assertions.assertWith(order,
 				i -> Assertions.assertThat(i.totalAmount()).isEqualTo(new Money("6210.00")),

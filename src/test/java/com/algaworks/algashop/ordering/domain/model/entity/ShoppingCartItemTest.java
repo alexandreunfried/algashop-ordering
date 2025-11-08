@@ -107,8 +107,9 @@ class ShoppingCartItemTest {
 				.totalAmount(new Money("100"))
 				.build();
 
-		Assertions.assertThat(item1).isEqualTo(item2);
-		Assertions.assertThat(item1.hashCode()).isEqualTo(item2.hashCode());
+		Assertions.assertThat(item1)
+				.isEqualTo(item2)
+				.hasSameHashCodeAs(item2);
 	}
 
 	@Test

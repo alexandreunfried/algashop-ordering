@@ -8,6 +8,7 @@ import com.algaworks.algashop.ordering.domain.model.valueobject.Shipping;
 
 import static org.assertj.core.api.Assertions.*;
 
+import com.algaworks.algashop.ordering.domain.model.valueobject.id.OrderItemId;
 import org.junit.jupiter.api.Test;
 
 class OrderChangingTest {
@@ -55,8 +56,8 @@ class OrderChangingTest {
 		Quantity quantity = new Quantity(5);
 
 		OrderItem orderItem = placedOrder.items().iterator().next();
-
-		assertThatThrownBy(() -> placedOrder.changeItemQuantity(orderItem.id(), quantity))
+		OrderItemId orderItemId = orderItem.id();
+		assertThatThrownBy(() -> placedOrder.changeItemQuantity(orderItemId, quantity))
 				.isInstanceOf(OrderCannotBeEditedException.class);
 	}
 

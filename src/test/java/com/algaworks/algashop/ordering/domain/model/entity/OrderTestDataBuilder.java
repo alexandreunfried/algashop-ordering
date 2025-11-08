@@ -50,6 +50,7 @@ public class OrderTestDataBuilder {
 
 		switch (status) {
 			case DRAFT -> {
+				// Draft is the initial state of the order, no action is required.
 			}
 			case PLACED -> {
 				order.place();
