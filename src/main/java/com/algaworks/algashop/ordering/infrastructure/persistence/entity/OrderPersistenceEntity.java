@@ -131,13 +131,13 @@ public class OrderPersistenceEntity {
 		replaceItems(items);
 	}
 
-	public void replaceItems(Set<OrderItemPersistenceEntity> items) {
-		if (items == null) {
-			items = new HashSet<>();
+	public void replaceItems(Set<OrderItemPersistenceEntity> updatedItems) {
+		if (updatedItems == null) {
+			updatedItems = new HashSet<>();
 		}
 
-		items.forEach(i -> i.setOrder(this));
-		setItems(items);
+		updatedItems.forEach(i -> i.setOrder(this));
+		setItems(updatedItems);
 	}
 
 	public void addItem(OrderItemPersistenceEntity item) {

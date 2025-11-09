@@ -23,12 +23,14 @@ public class ShoppingCart implements AggregateRoot<ShoppingCartId> {
 	private Quantity totalItems;
 	private OffsetDateTime createdAt;
 	private Set<ShoppingCartItem> items;
+	private Long version;
 
 	@Builder(builderClassName = "ExistingShoppingCartBuilder", builderMethodName = "existing")
-	public ShoppingCart(ShoppingCartId id, CustomerId customerId,
+	public ShoppingCart(ShoppingCartId id, Long version, CustomerId customerId,
 						Money totalAmount, Quantity totalItems, OffsetDateTime createdAt,
 						Set<ShoppingCartItem> items) {
 		setId(id);
+		setVersion(version);
 		setCustomerId(customerId);
 		setTotalAmount(totalAmount);
 		setTotalItems(totalItems);
@@ -37,7 +39,7 @@ public class ShoppingCart implements AggregateRoot<ShoppingCartId> {
 	}
 
 	public static ShoppingCart startShopping(CustomerId customerId) {
-		return new ShoppingCart(new ShoppingCartId(), customerId, Money.ZERO,
+		return new ShoppingCart(new ShoppingCartId(), null, customerId, Money.ZERO,
 				Quantity.ZERO, OffsetDateTime.now(), new HashSet<>());
 	}
 
@@ -161,6 +163,14 @@ public class ShoppingCart implements AggregateRoot<ShoppingCartId> {
 
 		this.totalAmount = new Money(newTotalAmount);
 		this.totalItems = new Quantity(newTotalItems);
+	}
+
+	public Long version() {
+		return version;
+	}
+
+	private void setVersion(Long version) {
+		this.version = version;
 	}
 
 	private void setId(ShoppingCartId id) {

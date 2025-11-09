@@ -25,7 +25,7 @@ class ShoppingCartItemTest {
 				i -> Assertions.assertThat(i.id()).isNotNull(),
 				i -> Assertions.assertThat(i.shoppingCartId()).isNotNull(),
 				i -> Assertions.assertThat(i.productId()).isNotNull(),
-				i -> Assertions.assertThat(i.name()).isEqualTo(new ProductName("Notebook")),
+				i -> Assertions.assertThat(i.productName()).isEqualTo(new ProductName("Notebook")),
 				i -> Assertions.assertThat(i.price()).isEqualTo(new Money("2000")),
 				i -> Assertions.assertThat(i.quantity()).isEqualTo(new Quantity(2)),
 				i -> Assertions.assertThat(i.isAvailable()).isTrue(),
