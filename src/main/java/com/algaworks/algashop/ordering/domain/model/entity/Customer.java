@@ -75,6 +75,11 @@ public class Customer implements AggregateRoot<CustomerId> {
 
 	public void addLoyaltyPoints(LoyaltyPoints loyaltyPointsAdded) {
 		verifyIfChangeable();
+
+		if (loyaltyPointsAdded.equals(LoyaltyPoints.ZERO)) {
+			return;
+		}
+
 		setLoyaltyPoints(loyaltyPoints().add(loyaltyPointsAdded));
 	}
 
