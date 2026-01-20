@@ -11,7 +11,7 @@ public interface ShippingCostService {
 	CalculationResult calculate(CalculationRequest request);
 
 	@Builder
-	record CalculationRequest(ZipCode origen, ZipCode destination) {
+	record CalculationRequest(ZipCode origin, ZipCode destination) {
 	}
 
 	@Builder
