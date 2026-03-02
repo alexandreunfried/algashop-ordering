@@ -2,6 +2,7 @@ package com.algaworks.algashop.ordering.application.service;
 
 import com.algaworks.algashop.ordering.application.model.AddressData;
 import com.algaworks.algashop.ordering.application.model.CustomerInput;
+import com.algaworks.algashop.ordering.application.model.CustomerOutput;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,25 @@ class CustomerManagementApplicationServiceIT {
 
 		UUID customerId = customerManagementApplicationService.create(input);
 		Assertions.assertThat(customerId).isNotNull();
+
+		CustomerOutput customerOutput = customerManagementApplicationService.findById(customerId);
+		Assertions.assertThat(customerOutput).isNotNull();
+		Assertions.assertThat(customerOutput.getId()).isEqualTo(customerId);
+		Assertions.assertThat(customerOutput.getFirstName()).isEqualTo("John");
+		Assertions.assertThat(customerOutput.getLastName()).isEqualTo("Doe");
+		Assertions.assertThat(customerOutput.getBirthDate()).isEqualTo(LocalDate.of(1991, 7, 5));
+		Assertions.assertThat(customerOutput.getPhone()).isEqualTo("478-256-2604");
+		Assertions.assertThat(customerOutput.getEmail()).isEqualTo("johndoe@email.com");
+		Assertions.assertThat(customerOutput.getRegisteredAt()).isNotNull();
+		Assertions.assertThat(customerOutput.getPromotionNotificationsAllowed()).isFalse();
+		Assertions.assertThat(customerOutput.getAddress()).isNotNull();
+		Assertions.assertThat(customerOutput.getAddress().getStreet()).isEqualTo("Bourbon Street");
+		Assertions.assertThat(customerOutput.getAddress().getNumber()).isEqualTo("1200");
+		Assertions.assertThat(customerOutput.getAddress().getComplement()).isEqualTo("Apt. 901");
+		Assertions.assertThat(customerOutput.getAddress().getNeighborhood()).isEqualTo("North Ville");
+		Assertions.assertThat(customerOutput.getAddress().getCity()).isEqualTo("Yostfort");
+		Assertions.assertThat(customerOutput.getAddress().getState()).isEqualTo("South Carolina");
+		Assertions.assertThat(customerOutput.getAddress().getZipCode()).isEqualTo("70283");
 	}
 
 }
