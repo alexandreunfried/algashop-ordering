@@ -56,7 +56,6 @@ class CustomerManagementApplicationServiceIT {
 
 		CustomerOutput customerOutput = customerManagementApplicationService.findById(customerId);
 
-
 		Assertions.assertThat(customerOutput).isNotNull();
 		Assertions.assertThat(customerOutput.getId()).isEqualTo(customerId);
 		Assertions.assertThat(customerOutput.getFirstName()).isEqualTo("Matt");
