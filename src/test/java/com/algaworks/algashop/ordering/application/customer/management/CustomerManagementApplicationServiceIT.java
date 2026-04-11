@@ -68,7 +68,7 @@ class CustomerManagementApplicationServiceIT {
 		Assertions.assertThat(customerOutput.getAddress()).isNotNull();
 		Assertions.assertThat(customerOutput.getAddress().getStreet()).isEqualTo("Amphitheatre Parkway");
 		Assertions.assertThat(customerOutput.getAddress().getNumber()).isEqualTo("1600");
-		Assertions.assertThat(customerOutput.getAddress().getComplement()).isEqualTo("");
+		Assertions.assertThat(customerOutput.getAddress().getComplement()).isEmpty();
 		Assertions.assertThat(customerOutput.getAddress().getNeighborhood()).isEqualTo("Mountain View");
 		Assertions.assertThat(customerOutput.getAddress().getCity()).isEqualTo("Mountain View");
 		Assertions.assertThat(customerOutput.getAddress().getState()).isEqualTo("California");
