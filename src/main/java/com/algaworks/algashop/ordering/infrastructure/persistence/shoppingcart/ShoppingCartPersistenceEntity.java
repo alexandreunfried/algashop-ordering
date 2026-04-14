@@ -89,6 +89,12 @@ public class ShoppingCartPersistenceEntity {
 		setItems(updatedItems);
 	}
 
+	public void addItem(Set<ShoppingCartItemPersistenceEntity> items) {
+		for (ShoppingCartItemPersistenceEntity item : items) {
+			addItem(item);
+		}
+	}
+
 	public void addItem(ShoppingCartItemPersistenceEntity item) {
 		if (item == null) {
 			return;

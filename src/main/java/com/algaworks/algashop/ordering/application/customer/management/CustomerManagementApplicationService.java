@@ -13,7 +13,6 @@ import java.util.UUID;
 
 import static com.algaworks.algashop.ordering.application.commons.AddressMapper.toAddress;
 
-
 @Service
 @RequiredArgsConstructor
 public class CustomerManagementApplicationService {
@@ -74,6 +73,24 @@ public class CustomerManagementApplicationService {
 
 		customer.changeAddress(toAddress(address));
 
+		customers.add(customer);
+	}
+
+	@Transactional
+	public void archive(UUID rawCustomerId) {
+		CustomerId customerId = new CustomerId(rawCustomerId);
+		Customer customer = customers.ofId(customerId)
+				.orElseThrow(CustomerNotFoundException::new);
+		customer.archive();
+		customers.add(customer);
+	}
+
+	@Transactional
+	public void changeEmail(UUID rawCustomerId, String newEmail) {
+		CustomerId customerId = new CustomerId(rawCustomerId);
+		Customer customer = customers.ofId(customerId)
+				.orElseThrow(CustomerNotFoundException::new);
+		customerRegistration.changeEmail(customer, new Email(newEmail));
 		customers.add(customer);
 	}
 

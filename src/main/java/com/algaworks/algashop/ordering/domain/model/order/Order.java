@@ -4,8 +4,8 @@ import com.algaworks.algashop.ordering.domain.model.AbstractEventSourceEntity;
 import com.algaworks.algashop.ordering.domain.model.AggregateRoot;
 import com.algaworks.algashop.ordering.domain.model.commons.Money;
 import com.algaworks.algashop.ordering.domain.model.commons.Quantity;
-import com.algaworks.algashop.ordering.domain.model.product.Product;
 import com.algaworks.algashop.ordering.domain.model.customer.CustomerId;
+import com.algaworks.algashop.ordering.domain.model.product.Product;
 import lombok.Builder;
 
 import java.math.BigDecimal;
@@ -41,10 +41,10 @@ public class Order extends AbstractEventSourceEntity implements AggregateRoot<Or
 
 	@Builder(builderClassName = "ExistingOrderBuilder", builderMethodName = "existing")
 	public Order(OrderId id, Long version, CustomerId customerId, Money totalAmount,
-				 Quantity totalItems, OffsetDateTime placedAt,
-				 OffsetDateTime paidAt, OffsetDateTime canceledAt,
-				 OffsetDateTime readyAt, Billing billing,
-				 Shipping shipping, OrderStatus status, PaymentMethod paymentMethod, Set<OrderItem> items) {
+	             Quantity totalItems, OffsetDateTime placedAt,
+	             OffsetDateTime paidAt, OffsetDateTime canceledAt,
+	             OffsetDateTime readyAt, Billing billing,
+	             Shipping shipping, OrderStatus status, PaymentMethod paymentMethod, Set<OrderItem> items) {
 		setId(id);
 		setVersion(version);
 		setCustomerId(customerId);
@@ -107,16 +107,19 @@ public class Order extends AbstractEventSourceEntity implements AggregateRoot<Or
 		verifyIfCanChangeToPlaced();
 		changeStatus(OrderStatus.PLACED);
 		setPlacedAt(OffsetDateTime.now());
+		publishDomainEvent(new OrderPlacedEvent(id(), customerId(), placedAt()));
 	}
 
 	public void markAsPaid() {
 		changeStatus(OrderStatus.PAID);
 		setPaidAt(OffsetDateTime.now());
+		publishDomainEvent(new OrderPaidEvent(id(), customerId(), paidAt()));
 	}
 
 	public void markAsReady() {
 		changeStatus(OrderStatus.READY);
 		setReadyAt(OffsetDateTime.now());
+		publishDomainEvent(new OrderReadyEvent(id(), customerId(), readyAt()));
 	}
 
 	public void changePaymentMethod(PaymentMethod paymentMethod) {
@@ -169,6 +172,7 @@ public class Order extends AbstractEventSourceEntity implements AggregateRoot<Or
 	public void cancel() {
 		changeStatus(OrderStatus.CANCELED);
 		setCanceledAt(OffsetDateTime.now());
+		publishDomainEvent(new OrderCanceledEvent(id(), customerId(), canceledAt()));
 	}
 
 	public boolean isDraft() {

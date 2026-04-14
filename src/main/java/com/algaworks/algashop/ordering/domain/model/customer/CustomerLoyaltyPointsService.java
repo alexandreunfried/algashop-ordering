@@ -24,7 +24,7 @@ public class CustomerLoyaltyPointsService {
 		}
 
 		if (!order.isReady()) {
-			throw new CantAddLoyaltyPointOrderIsNotReady();
+			throw new CantAddLoyaltyPointsOrderIsNotReady();
 		}
 
 		customer.addLoyaltyPoints(calculatePoints(order));

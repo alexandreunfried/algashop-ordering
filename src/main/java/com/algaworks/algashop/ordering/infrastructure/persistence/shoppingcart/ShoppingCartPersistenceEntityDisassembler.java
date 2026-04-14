@@ -40,7 +40,7 @@ public class ShoppingCartPersistenceEntityDisassembler {
 				.id(new ShoppingCartItemId(persistenceEntity.getId()))
 				.shoppingCartId(new ShoppingCartId(persistenceEntity.getShoppingCartId()))
 				.productId(new ProductId(persistenceEntity.getProductId()))
-				.productName(new ProductName(persistenceEntity.getProductName()))
+				.productName(new ProductName(persistenceEntity.getName()))
 				.price(new Money(persistenceEntity.getPrice()))
 				.quantity(new Quantity(persistenceEntity.getQuantity()))
 				.available(persistenceEntity.getAvailable())
