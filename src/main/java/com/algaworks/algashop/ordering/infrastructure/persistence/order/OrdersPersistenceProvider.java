@@ -56,6 +56,8 @@ public class OrdersPersistenceProvider implements Orders {
 						persistenceEntity -> update(aggregateRoot, persistenceEntity),
 						() -> insert(aggregateRoot)
 				);
+
+		aggregateRoot.clearDomainEvents();
 	}
 
 	@Override

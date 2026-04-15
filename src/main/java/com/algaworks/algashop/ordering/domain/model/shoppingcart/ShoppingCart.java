@@ -3,9 +3,9 @@ package com.algaworks.algashop.ordering.domain.model.shoppingcart;
 import com.algaworks.algashop.ordering.domain.model.AbstractEventSourceEntity;
 import com.algaworks.algashop.ordering.domain.model.AggregateRoot;
 import com.algaworks.algashop.ordering.domain.model.commons.Money;
-import com.algaworks.algashop.ordering.domain.model.product.Product;
 import com.algaworks.algashop.ordering.domain.model.commons.Quantity;
 import com.algaworks.algashop.ordering.domain.model.customer.CustomerId;
+import com.algaworks.algashop.ordering.domain.model.product.Product;
 import com.algaworks.algashop.ordering.domain.model.product.ProductId;
 import lombok.Builder;
 
@@ -25,8 +25,8 @@ public class ShoppingCart extends AbstractEventSourceEntity implements Aggregate
 
 	@Builder(builderClassName = "ExistingShoppingCartBuilder", builderMethodName = "existing")
 	public ShoppingCart(ShoppingCartId id, Long version, CustomerId customerId,
-						Money totalAmount, Quantity totalItems, OffsetDateTime createdAt,
-						Set<ShoppingCartItem> items) {
+	                    Money totalAmount, Quantity totalItems, OffsetDateTime createdAt,
+	                    Set<ShoppingCartItem> items) {
 		setId(id);
 		setVersion(version);
 		setCustomerId(customerId);
@@ -37,20 +37,41 @@ public class ShoppingCart extends AbstractEventSourceEntity implements Aggregate
 	}
 
 	public static ShoppingCart startShopping(CustomerId customerId) {
-		return new ShoppingCart(new ShoppingCartId(), null, customerId, Money.ZERO,
+		ShoppingCart shoppingCart = new ShoppingCart(new ShoppingCartId(), null, customerId, Money.ZERO,
 				Quantity.ZERO, OffsetDateTime.now(), new HashSet<>());
+
+		shoppingCart.publishDomainEvent(new ShoppingCartCreatedEvent(
+				shoppingCart.id(),
+				shoppingCart.customerId(),
+				shoppingCart.createdAt()
+		));
+
+		return shoppingCart;
 	}
 
 	public void empty() {
 		items.clear();
 		totalAmount = Money.ZERO;
 		totalItems = Quantity.ZERO;
+
+		publishDomainEvent(new ShoppingCartEmptiedEvent(
+				id(),
+				customerId(),
+				OffsetDateTime.now()
+		));
 	}
 
 	public void removeItem(ShoppingCartItemId shoppingCartItemId) {
 		ShoppingCartItem shoppingCartItem = findItem(shoppingCartItemId);
 		items.remove(shoppingCartItem);
 		recalculateTotals();
+
+		publishDomainEvent(new ShoppingCartItemRemovedEvent(
+				id(),
+				customerId(),
+				shoppingCartItem.productId(),
+				OffsetDateTime.now()
+		));
 	}
 
 	public void addItem(Product product, Quantity quantity) {
@@ -72,6 +93,12 @@ public class ShoppingCart extends AbstractEventSourceEntity implements Aggregate
 				.ifPresentOrElse(i -> updateItem(i, product, quantity), () -> insertItem(shoppingCartItem));
 
 		recalculateTotals();
+
+		publishDomainEvent(new ShoppingCartItemAddedEvent(
+				id(),
+				customerId(),
+				product.id(),
+				OffsetDateTime.now()));
 	}
 
 	public ShoppingCartItem findItem(ShoppingCartItemId shoppingCartItemId) {

@@ -152,10 +152,14 @@ class OrderTest {
 		Shipping shipping = aShipping();
 
 		Order order = Order.draft(new CustomerId());
+		Money expectedTotalAmount = order.totalAmount().add(shipping.cost());
 
 		order.changeShipping(shipping);
 
-		Assertions.assertThat(order.shipping()).isEqualTo(shipping);
+		Assertions.assertWith(order,
+				o -> Assertions.assertThat(o.shipping()).isEqualTo(shipping),
+				o -> Assertions.assertThat(o.totalAmount()).isEqualTo(expectedTotalAmount)
+		);
 	}
 
 	@Test
