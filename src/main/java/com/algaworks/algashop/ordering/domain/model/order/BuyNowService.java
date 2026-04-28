@@ -26,6 +26,8 @@ public class BuyNowService {
 
 		Order order = Order.draft(customer.id());
 		order.changeBilling(billing);
+		order.changePaymentMethod(paymentMethod);
+		order.addItem(product, quantity);
 
 		if (haveFreeShipping(customer)) {
 			Shipping freeShipping = shipping.toBuilder().cost(Money.ZERO).build();
@@ -33,8 +35,7 @@ public class BuyNowService {
 		} else {
 			order.changeShipping(shipping);
 		}
-		order.changePaymentMethod(paymentMethod);
-		order.addItem(product, quantity);
+
 		order.place();
 
 		return order;
