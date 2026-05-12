@@ -13,7 +13,6 @@ import java.time.OffsetDateTime;
 @Builder
 public class OrderSummaryOutput {
 	private String id;
-	private CustomerMinimalOutput customer;
 	private Integer totalItems;
 	private BigDecimal totalAmount;
 	private OffsetDateTime placedAt;
@@ -22,13 +21,13 @@ public class OrderSummaryOutput {
 	private OffsetDateTime readyAt;
 	private String status;
 	private String paymentMethod;
+	private CustomerMinimalOutput customer;
 
-	public OrderSummaryOutput(Long id, CustomerMinimalOutput customer, Integer totalItems,
+	public OrderSummaryOutput(Long id, Integer totalItems,
 	                          BigDecimal totalAmount, OffsetDateTime placedAt, OffsetDateTime paidAt,
 	                          OffsetDateTime canceledAt, OffsetDateTime readyAt,
-	                          String status, String paymentMethod) {
+	                          String status, String paymentMethod, CustomerMinimalOutput customer) {
 		this.id = new OrderId(id).toString();
-		this.customer = customer;
 		this.totalItems = totalItems;
 		this.totalAmount = totalAmount;
 		this.placedAt = placedAt;
@@ -37,5 +36,6 @@ public class OrderSummaryOutput {
 		this.readyAt = readyAt;
 		this.status = status;
 		this.paymentMethod = paymentMethod;
+		this.customer = customer;
 	}
 }
