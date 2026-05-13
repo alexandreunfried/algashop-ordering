@@ -10,11 +10,11 @@ import org.springframework.data.domain.Sort;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public abstract class SorteablePageFilter<T> extends PageFilter {
+public abstract class SortablePageFilter<T> extends PageFilter {
 	private T sortByProperty;
 	private Sort.Direction sortDirection;
 
-	protected SorteablePageFilter(int size, int page) {
+	protected SortablePageFilter(int size, int page) {
 		super(size, page);
 	}
 

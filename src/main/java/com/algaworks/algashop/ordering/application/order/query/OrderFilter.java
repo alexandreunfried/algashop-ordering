@@ -1,6 +1,6 @@
 package com.algaworks.algashop.ordering.application.order.query;
 
-import com.algaworks.algashop.ordering.application.utility.SorteablePageFilter;
+import com.algaworks.algashop.ordering.application.utility.SortablePageFilter;
 import lombok.*;
 import org.springframework.data.domain.Sort;
 
@@ -12,7 +12,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class OrderFilter extends SorteablePageFilter<OrderFilter.SortType> {
+public class OrderFilter extends SortablePageFilter<OrderFilter.SortType> {
 
 	private String status;
 	private String orderId;
